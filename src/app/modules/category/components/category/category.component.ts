@@ -86,22 +86,6 @@ export class CategoryComponent implements OnInit {
     });
   }
 
-  // delete(id: any){
-  //   const dialogRef = this.dialog.open(ConfirmComponent , {
-  //     data: {id: id}
-  //   });
-
-  //   dialogRef.afterClosed().subscribe((result:any) => {
-      
-  //     if( result == 1){
-  //       this.openSnackBar("Categoria Eliminada", "Exitosa");
-  //       this.getCategories();
-  //     } else if (result == 2) {
-  //       this.openSnackBar("Se produjo un error al eliminar categoria", "Error");
-  //     }
-  //   });
-  // }
-
   openSnackBar(message: string, action: string) : MatSnackBarRef<SimpleSnackBar>{
     return this.snackBar.open(message, action, {
       duration: 2000

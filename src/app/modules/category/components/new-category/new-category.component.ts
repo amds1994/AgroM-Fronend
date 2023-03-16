@@ -42,32 +42,24 @@ this.estadoFormulario = "Actualizar";
       description: this.categoryForm.get('description')?.value
     }
 
-    this.categoryService.saveCategories(data)
-    .subscribe((data:any) => {
-      console.log("Respuesta categories: ",data);
-      this.dialogRef.close(1);
-    }), (error:any) => {
-      this.dialogRef.close(2);
+    if (this.data != null ){
+      //Actualizar un registro
+      this.categoryService.updateCategories(data, this.data.id)
+              .subscribe( (data: any) =>{
+                this.dialogRef.close(1);
+              }, (error:any) =>{
+                this.dialogRef.close(2);
+              })
+    } else {
+      //crear un nuevo registro
+      this.categoryService.saveCategories(data)
+          .subscribe( (data : any) => {
+            console.log(data);
+            this.dialogRef.close(1);
+          }, (error: any) => {
+            this.dialogRef.close(2);
+          })
     }
-
-    // if (this.data != null ){
-    //   //Actualizar un registro
-    //   this.categoryService.updateCategorie(data, this.data.id)
-    //           .subscribe( (data: any) =>{
-    //             this.dialogRef.close(1);
-    //           }, (error:any) =>{
-    //             this.dialogRef.close(2);
-    //           })
-    // } else {
-    //   //crear un nuevo registro
-    //   this.categoryService.saveCategorie(data)
-    //       .subscribe( (data : any) => {
-    //         console.log(data);
-    //         this.dialogRef.close(1);
-    //       }, (error: any) => {
-    //         this.dialogRef.close(2);
-    //       })
-    // }
     
 
   }
