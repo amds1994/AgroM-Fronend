@@ -40,38 +40,53 @@ export class ProductComponent implements OnInit {
       console.log("Error en productos: ",error);
     });
   }
-  processProductResponse(resp: any){
+  processProductResponse(resp: any) {
     const dateProduct: ProductElement[] = [];
-     if( resp.metadata[0].code == "00"){
-       let listCProduct = resp.product.products;
-
-       listCProduct.forEach((element: ProductElement) => {
-        //  element.category = element.category.name;
-         element.picture = 'data:image/jpeg;base64,'+element.picture;
-         dateProduct.push(element);
-       });
-
-       //set the datasource
-       this.dataSource = new MatTableDataSource<ProductElement>(dateProduct);
-       this.dataSource.paginator = this.paginator;
-     }
+  
+    if (resp.metadata[0].code === "00") {
+      let listCProduct = resp.product.products;
+  
+      if (listCProduct.length === 0) {
+        // No se encontraron productos por nombre, puedes realizar una acción aquí
+        console.log("No se encontraron productos por ese nombre.");
+        this.dataSource = new MatTableDataSource<ProductElement>(dateProduct);
+        this.dataSource.paginator = this.paginator;
+        return;
+      }
+  
+      listCProduct.forEach((element: ProductElement) => {
+        // element.category = element.category.name;  // Comentado para no modificar la categoría
+        element.picture = 'data:image/jpeg;base64,' + element.picture;
+        dateProduct.push(element);
+      });
+  
+      // Setear el data source
+      this.dataSource = new MatTableDataSource<ProductElement>(dateProduct);
+      this.dataSource.paginator = this.paginator;
+    }
   }
+  
 
-  openProductDialog(){
-    const dialogRef = this.dialog.open(NewProductComponent , {
-      width: '450px'
+  openProductDialog() {
+    // Abre el diálogo para agregar un nuevo producto
+    const dialogRef = this.dialog.open(NewProductComponent, {
+      width: '450px', // Ancho del diálogo
     });
-
-    dialogRef.afterClosed().subscribe((result:any) => {
-      
-      if( result == 1){
+  
+    // Escucha el evento de cierre del diálogo
+    dialogRef.afterClosed().subscribe((result: number | undefined) => {
+      // Comprueba el resultado obtenido del diálogo
+      if (result === 1) {
+        // El producto fue agregado exitosamente
         this.openSnackBar("Producto Agregado", "Exitosa");
         this.getProducts();
-      } else if (result == 2) {
+      } else if (result === 2) {
+        // Ocurrió un error al guardar el producto
         this.openSnackBar("Se produjo un error al guardar producto", "Error");
       }
     });
   }
+  
 
   openSnackBar(message: string, action: string) : MatSnackBarRef<SimpleSnackBar>{
     return this.snackBar.open(message, action, {
@@ -118,6 +133,19 @@ export class ProductComponent implements OnInit {
       }
     });
   }
+
+  buscar(name: any){
+
+    if(name.length === 0){
+      return this.getProducts();
+    }
+
+    this.productServices.getProductByName(name)
+      .subscribe( ( resp: any) => {
+        this.processProductResponse(resp);
+      });
+  }
+  
   
 }
 
