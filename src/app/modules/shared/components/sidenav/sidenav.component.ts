@@ -10,6 +10,7 @@ import { KeycloakService } from 'keycloak-angular';
 export class SidenavComponent implements OnInit {
 
   mobileQuery: MediaQueryList;
+  username: any;
 
   // Son los llamados a los componentes desde router-child.module.ts
   menuNav = [
@@ -23,6 +24,9 @@ export class SidenavComponent implements OnInit {
   }
 
   ngOnInit(): void {
+
+    // Obtenemos el nombre de usuario
+    this.username = this.keyloackSerevice.getUsername();
   }
 
   // cerrar sesion
